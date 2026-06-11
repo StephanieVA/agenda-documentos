@@ -1,0 +1,213 @@
+<div class="header-control">
+  <div class="titulo">
+    <h1>📊 Control de Evaluaciones</h1>
+
+    <p>
+      Analiza automáticamente los porcentajes de evaluación por programa,
+      asignatura y unidad académica.
+    </p>
+  </div>
+
+  <div class="acciones">
+    <input
+      type="file"
+      (change)="seleccionarArchivo($event)"
+      accept=".xlsx,.xls"
+    />
+
+    <button class="btn-procesar" (click)="procesarExcel()">
+      ⚙️ Procesar Archivo
+    </button>
+
+    <button class="btn-exportar" (click)="exportarExcel()">
+      📥 Exportar Excel
+    </button>
+  </div>
+</div>
+
+<div class="cards-resumen">
+  <div class="card-resumen">
+    <span>Reporte 1</span>
+    <h2>{{ reporteDiferente100.length }}</h2>
+  </div>
+
+  <div class="card-resumen">
+    <span>Reporte 2</span>
+    <h2>{{ reporteUnidad2Cero.length }}</h2>
+  </div>
+
+  <div class="card-resumen">
+    <span>Reporte 3</span>
+    <h2>{{ reporteDosUnidadesCero.length }}</h2>
+  </div>
+
+  <div class="card-resumen">
+    <span>Reporte 4</span>
+    <h2>{{ reporteTresUnidades.length }}</h2>
+  </div>
+</div>
+
+<div class="tabs">
+  <button [class.activo]="tab === 1" (click)="tab = 1">
+    📊 Diferente de 100%
+  </button>
+
+  <button [class.activo]="tab === 2" (click)="tab = 2">⚠️ Unidad Vacía</button>
+
+  <button [class.activo]="tab === 3" (click)="tab = 3">
+    🚫 Sin Evaluaciones
+  </button>
+
+  <button [class.activo]="tab === 4" (click)="tab = 4">📚 Tres Unidades</button>
+</div>
+
+@if (tab === 1) {
+  <h2>Reporte 1</h2>
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Programa</th>
+          <th>Asignatura</th>
+          <th>Docente</th>
+          <th>Unidad I</th>
+          <th>Unidad II</th>
+          <th>Observación</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of reporteDiferente100; track item.curso) {
+          <tr>
+            <td>{{ item.facultad }}</td>
+
+            <td>{{ item.curso }}</td>
+            <td>{{ item.docente }}</td>
+
+            <td>{{ item.unidad1 }}%</td>
+
+            <td>{{ item.unidad2 }}%</td>
+
+            <td>{{ item.observacion }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if (reporteDiferente100.length === 0) {
+    <div class="sin-registros">
+      ✅ No existen observaciones para este reporte.
+    </div>
+  }
+}
+@if (tab === 2) {
+  <h2>Unidad I = 100% y Unidad II = 0%</h2>
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Programa</th>
+          <th>Asignatura</th>
+          <th>Docente</th>
+          <th>Unidad I</th>
+          <th>Unidad II</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of reporteUnidad2Cero; track item.curso) {
+          <tr>
+            <td>{{ item.facultad }}</td>
+
+            <td>{{ item.curso }}</td>
+            <td>{{ item.docente }}</td>
+
+            <td>{{ item.unidad1 }}%</td>
+
+            <td>{{ item.unidad2 }}%</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if (reporteDiferente100.length === 0) {
+    <div class="sin-registros">
+      ✅ No existen observaciones para este reporte.
+    </div>
+  }
+}
+@if (tab === 3) {
+  <h2>Ambas Unidades en 0%</h2>
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Programa</th>
+          <th>Asignatura</th>
+          <th>Docente</th>
+          <th>Unidad I</th>
+          <th>Unidad II</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of reporteDosUnidadesCero; track item.curso) {
+          <tr>
+            <td>{{ item.facultad }}</td>
+
+            <td>{{ item.curso }}</td>
+            <td>{{ item.docente }}</td>
+
+            <td>{{ item.unidad1 }}%</td>
+
+            <td>{{ item.unidad2 }}%</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if (reporteDiferente100.length === 0) {
+    <div class="sin-registros">
+      ✅ No existen observaciones para este reporte.
+    </div>
+  }
+}
+@if (tab === 4) {
+  <h2>Cursos con 3 Unidades</h2>
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Programa</th>
+          <th>Asignatura</th>
+          <th>Docente</th>
+          <th>Unidad I</th>
+          <th>Unidad II</th>
+          <th>Unidad III</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of reporteTresUnidades; track item.curso) {
+          <tr>
+            <td>{{ item.facultad }}</td>
+
+            <td>{{ item.curso }}</td>
+            <td>{{ item.docente }}</td>
+
+            <td>{{ item.unidad1 }}%</td>
+
+            <td>{{ item.unidad2 }}%</td>
+
+            <td>{{ item.unidad3 }}%</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if (reporteDiferente100.length === 0) {
+    <div class="sin-registros">
+      ✅ No existen observaciones para este reporte.
+    </div>
+  }
+}

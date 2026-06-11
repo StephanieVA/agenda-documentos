@@ -1,0 +1,194 @@
+<div class="header-sistema">
+  <div class="titulo-container">
+    <h1>📂 Seguimiento de Archivos</h1>
+    <p>
+      Administra, realiza seguimiento y controla el estado de tus documentos
+      pendientes.
+    </p>
+  </div>
+
+  <div class="formulario">
+    <input type="text" placeholder="Número de documento" [(ngModel)]="numero" />
+
+    <input type="text" placeholder="Asunto" [(ngModel)]="asunto" />
+
+    <textarea
+      rows="2"
+      placeholder="Registrar seguimiento"
+      [(ngModel)]="nuevoSeguimiento"
+    ></textarea>
+
+    <button (click)="agregarDocumento()">➕ Agregar Documento</button>
+  </div>
+</div>
+
+<div class="contenedor">
+  <!-- Pendientes -->
+  <div class="columna">
+    <h2>🟡 Pendientes</h2>
+
+    @for (doc of documentos; track doc.id) {
+      @if (doc.estado === "pendiente") {
+        <div class="card">
+          <h3>{{ doc.numero }}</h3>
+
+          <p>{{ doc.asunto }}</p>
+
+          <small>
+            {{ doc.fechaCreacion | date: "dd/MM/yyyy HH:mm" }}
+          </small>
+
+          <br /><br />
+
+          <button (click)="atender(doc)">Atender</button>
+        </div>
+      }
+    }
+  </div>
+
+  <!-- Atención -->
+  <div class="columna">
+    <h2>🔵 En Atención</h2>
+
+    @for (doc of documentos; track doc.id) {
+      @if (doc.estado === "atencion") {
+        <div class="card">
+          <h3>{{ doc.numero }}</h3>
+
+          <p>{{ doc.asunto }}</p>
+
+          <small>
+            Inicio:
+            {{ doc.fechaInicio | date: "dd/MM/yyyy HH:mm" }}
+          </small>
+
+          <br /><br />
+
+          <button (click)="abrirSeguimiento(doc)">📋 Seguimiento</button>
+        </div>
+      }
+    }
+  </div>
+
+  <!-- Finalizados -->
+  <div class="columna">
+    <h2>🟢 Finalizados</h2>
+
+    @for (doc of documentos; track doc.id) {
+      @if (doc.estado === "finalizado") {
+        <div class="card">
+          <h3>{{ doc.numero }}</h3>
+
+          <p>{{ doc.asunto }}</p>
+
+          <small>
+            Finalizado:
+            {{ doc.fechaFin | date: "dd/MM/yyyy HH:mm" }}
+          </small>
+
+          <hr />
+
+          <button (click)="verHistorial(doc)">👁 Ver Historial</button>
+
+          <button (click)="volverPendiente(doc)">↩️ Volver a Pendiente</button>
+        </div>
+      }
+    }
+
+    @if (documentoSeleccionado && !modalHistorial) {
+      <div class="modal-backdrop">
+        <div class="modal">
+          <div class="cabecera-modal">
+            <h2>📄 {{ documentoSeleccionado.numero }}</h2>
+
+            <span class="estado-modal">
+              {{ documentoSeleccionado.estado }}
+            </span>
+
+            <p>{{ documentoSeleccionado.asunto }}</p>
+          </div>
+          @if (documentoSeleccionado.estado !== "finalizado") {
+            <textarea
+              rows="4"
+              placeholder="Registrar seguimiento"
+              [(ngModel)]="nuevoSeguimiento"
+            ></textarea>
+
+            <button (click)="agregarSeguimiento()">Guardar Seguimiento</button>
+          }
+          <hr />
+
+          <h3>Historial</h3>
+
+          <div class="historial-scroll">
+            @for (seg of seguimientos; track seg.id) {
+              <div class="seguimiento">
+                <small>
+                  {{ seg.fecha | date: "dd/MM/yyyy HH:mm" }}
+                </small>
+
+                <p>
+                  {{ seg.detalle }}
+                </p>
+
+                @if (documentoSeleccionado.estado !== "finalizado") {
+                  <button (click)="editarSeguimiento(seg)">Editar</button>
+
+                  <button (click)="eliminarSeguimiento(seg)">Eliminar</button>
+                }
+              </div>
+            }
+          </div>
+
+          <hr />
+
+          <div class="acciones-modal">
+            @if (documentoSeleccionado.estado !== "finalizado") {
+              <button (click)="finalizar(documentoSeleccionado)">
+                ✅ Finalizar Documento
+              </button>
+            }
+
+            <button (click)="cerrarModal()">❌ Cerrar</button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+@if (modalHistorial) {
+  <div class="modal-backdrop">
+    <div class="modal modal-historial">
+      <div class="cabecera-modal">
+        <h2>📄 {{ documentoSeleccionado.numero }}</h2>
+
+        <p>
+          {{ documentoSeleccionado.asunto }}
+        </p>
+      </div>
+
+      <hr />
+
+      <h3>📋 Historial de Seguimiento</h3>
+
+      <div class="historial-scroll">
+        @for (seg of seguimientos; track seg.id) {
+          <div class="seguimiento">
+            <small>
+              {{ seg.fecha | date: "dd/MM/yyyy HH:mm" }}
+            </small>
+
+            <p>
+              {{ seg.detalle }}
+            </p>
+          </div>
+        }
+      </div>
+
+      <div class="acciones-modal">
+        <button (click)="cerrarHistorial()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+}

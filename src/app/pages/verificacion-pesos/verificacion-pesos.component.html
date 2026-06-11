@@ -1,0 +1,142 @@
+<div class="header-control">
+  <div class="titulo">
+    <h1>⚖️ Verificación de Peso de Unidades</h1>
+
+    <p>Verifica automáticamente la distribución de pesos por unidad.</p>
+  </div>
+
+  <div class="acciones">
+    <input
+      type="file"
+      (change)="seleccionarArchivo($event)"
+      accept=".xlsx,.xls"
+    />
+
+    <button class="btn-procesar" (click)="procesarExcel()">
+      Procesar Excel
+    </button>
+
+    <button class="btn-exportar" (click)="exportarExcel()">
+      📥 Exportar Reportes
+    </button>
+  </div>
+</div>
+
+<div class="cards-resumen">
+  <div class="card-resumen">
+    <span>Menor a 100%</span>
+    <h2>{{ reporteMenor100.length }}</h2>
+  </div>
+
+  <div class="card-resumen">
+    <span>Correctos</span>
+    <h2>{{ reporteCorrecto100.length }}</h2>
+  </div>
+
+  <div class="card-resumen">
+    <span>Sin Peso</span>
+    <h2>{{ reporteCero.length }}</h2>
+  </div>
+</div>
+
+<div class="tabs">
+  <button [class.activo]="tab === 1" (click)="tab = 1">Reporte 1</button>
+
+  <button [class.activo]="tab === 2" (click)="tab = 2">Reporte 2</button>
+
+  <button [class.activo]="tab === 3" (click)="tab = 3">Reporte 3</button>
+</div>
+
+@if (tab === 1) {
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Programa</th>
+          <th>Asignatura</th>
+          <th>Docente</th>
+          <th>Unidad I</th>
+          <th>Unidad II</th>
+          <th>Observación</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of reporteMenor100; track item.curso) {
+          <tr>
+            <td>{{ item.facultad }}</td>
+            <td>{{ item.curso }}</td>
+            <td>{{ item.docente }}</td>
+            <td>{{ item.unidad1 }}%</td>
+            <td>{{ item.unidad2 }}%</td>
+            <td>{{ item.observacion }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (tab === 2) {
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Programa</th>
+          <th>Asignatura</th>
+          <th>Docente</th>
+          <th>Unidad I</th>
+          <th>Unidad II</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of reporteCorrecto100; track item.curso) {
+          <tr>
+            <td>{{ item.facultad }}</td>
+
+            <td>{{ item.curso }}</td>
+
+            <td>{{ item.docente }}</td>
+
+            <td>{{ item.unidad1 }}%</td>
+
+            <td>{{ item.unidad2 }}%</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (tab === 3) {
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Programa</th>
+          <th>Asignatura</th>
+          <th>Docente</th>
+          <th>Unidad I</th>
+          <th>Unidad II</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of reporteCero; track item.curso) {
+          <tr>
+            <td>{{ item.facultad }}</td>
+
+            <td>{{ item.curso }}</td>
+
+            <td>{{ item.docente }}</td>
+
+            <td>{{ item.unidad1 }}%</td>
+
+            <td>{{ item.unidad2 }}%</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
