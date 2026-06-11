@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class DocumentoService {
-  api = 'agenda-api-production-c2ba.up.railway.app';
+  api = 'https://agenda-api-production-c2ba.up.railway.app';
 
   constructor(private http: HttpClient) {}
 
