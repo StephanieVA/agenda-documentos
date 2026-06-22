@@ -45,6 +45,16 @@
     <span>Reporte 4</span>
     <h2>{{ reporteTresUnidades.length }}</h2>
   </div>
+
+  <div class="card-resumen">
+    <span>Reporte 5 (Sumatoria 200%)</span>
+    <h2>{{ reporteSumatoria200.length }}</h2>
+  </div>
+
+  <div class="card-resumen">
+    <span>Reporte 6 (Sumatoria 100%)</span>
+    <h2>{{ reporteSumatoria100.length }}</h2>
+  </div>
 </div>
 
 <div class="tabs">
@@ -59,10 +69,18 @@
   </button>
 
   <button [class.activo]="tab === 4" (click)="tab = 4">📚 Tres Unidades</button>
+  <button [class.activo]="tab === 5" (click)="tab = 5">
+    ⚡ Sumatoria 200%
+  </button>
+
+  <button [class.activo]="tab === 6" (click)="tab = 6">
+    ✅ Sumatoria 100%
+  </button>
 </div>
 
 @if (tab === 1) {
   <h2>Reporte 1</h2>
+
   <div class="tabla-container">
     <table>
       <thead>
@@ -82,7 +100,14 @@
             <td>{{ item.facultad }}</td>
 
             <td>{{ item.curso }}</td>
-            <td>{{ item.docente }}</td>
+            <td>
+              <button
+                class="link-docente"
+                (click)="abrirModalDocente(item.docente, item.curso)"
+              >
+                {{ item.docente }}
+              </button>
+            </td>
 
             <td>{{ item.unidad1 }}%</td>
 
@@ -210,4 +235,139 @@
       ✅ No existen observaciones para este reporte.
     </div>
   }
+}
+
+@if (tab === 5) {
+  <h2>Asignaturas con sumatoria de 200% (Unidad I + Unidad II)</h2>
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Programa</th>
+          <th>Asignatura</th>
+          <th>Docente</th>
+          <th>Unidad I</th>
+          <th>Unidad II</th>
+          <th>Sumatoria</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of reporteSumatoria200; track item.curso) {
+          <tr>
+            <td>{{ item.facultad }}</td>
+            <td>{{ item.curso }}</td>
+            <td>
+              <button
+                class="link-docente"
+                (click)="abrirModalDocente(item.docente, item.curso)"
+              >
+                {{ item.docente }}
+              </button>
+            </td>
+            <td>{{ item.unidad1 }}%</td>
+            <td>{{ item.unidad2 }}%</td>
+            <td>{{ item.unidad1 + item.unidad2 }}%</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if (reporteSumatoria200.length === 0) {
+    <div class="sin-registros">
+      ✅ No existen observaciones para este reporte.
+    </div>
+  }
+}
+
+@if (tab === 6) {
+  <h2>Asignaturas con sumatoria de 100% (Unidad I + Unidad II)</h2>
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Programa</th>
+          <th>Asignatura</th>
+          <th>Docente</th>
+          <th>Unidad I</th>
+          <th>Unidad II</th>
+          <th>Sumatoria</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of reporteSumatoria100; track item.curso) {
+          <tr>
+            <td>{{ item.facultad }}</td>
+            <td>{{ item.curso }}</td>
+            <td>
+              <button
+                class="link-docente"
+                (click)="abrirModalDocente(item.docente, item.curso)"
+              >
+                {{ item.docente }}
+              </button>
+            </td>
+            <td>{{ item.unidad1 }}%</td>
+            <td>{{ item.unidad2 }}%</td>
+            <td>{{ item.unidad1 + item.unidad2 }}%</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if (reporteSumatoria100.length === 0) {
+    <div class="sin-registros">
+      ✅ No existen observaciones para este reporte.
+    </div>
+  }
+}
+
+@if (modalDocenteOpen) {
+  <div class="modal-overlay" (click)="cerrarModalDocente()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Evaluaciones del docente</h3>
+        <button class="modal-close" (click)="cerrarModalDocente()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="docente-titulo">
+          <b>{{ docenteSeleccionado }}</b>
+        </p>
+
+        <div class="tabla-container modal-tabla">
+          <table>
+            <thead>
+              <tr>
+                <th>Programa</th>
+                <th>Asignatura</th>
+                <th>Unidad</th>
+                <th>Porcentaje</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (
+                e of evaluacionesDocente;
+                track e.asignatura + e.unidad + e.porcentaje
+              ) {
+                <tr>
+                  <td>{{ e.facultad }}</td>
+                  <td>{{ e.asignatura }}</td>
+                  <td>{{ e.unidad }}</td>
+                  <td>{{ e.porcentaje }}%</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        @if (evaluacionesDocente.length === 0) {
+          <div class="sin-registros">
+            Este docente no tiene evaluaciones en el archivo cargado.
+          </div>
+        }
+      </div>
+    </div>
+  </div>
 }

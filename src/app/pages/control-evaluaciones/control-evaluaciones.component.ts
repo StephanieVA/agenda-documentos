@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import * as XLSX from 'xlsx';
+import { CommonModule } from '@angular/common';
+import { EvaluacionesService } from '../../services/evaluaciones.service';
 
 @Component({
   selector: 'app-control-evaluaciones',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './control-evaluaciones.component.html',
   styleUrl: './control-evaluaciones.component.scss',
 })
@@ -26,6 +28,31 @@ export class ControlEvaluacionesComponent {
 
   // Reporte 4
   reporteTresUnidades: any[] = [];
+
+  // Reporte 5 (Sumatoria 200% = Unidad I + Unidad II)
+  reporteSumatoria200: any[] = [];
+
+  // Reporte 6 (Sumatoria 100% = Unidad I + Unidad II) - asignaturas bien configuradas
+  reporteSumatoria100: any[] = [];
+
+  // Modal docente
+  modalDocenteOpen = false;
+  docenteSeleccionado = '';
+  evaluacionesDocente: any[] = [];
+
+  //DATOS ESTADISTICOS
+  estadisticaUnidad1: any[] = [];
+  estadisticaUnidad2: any[] = [];
+
+  cumplenU1 = 0;
+  faltanU1 = 0;
+
+  cumplenU2 = 0;
+  faltanU2 = 0;
+
+  porcentajeU1 = 0;
+  porcentajeU2 = 0;
+  constructor(private evaluacionesService: EvaluacionesService) {}
 
   seleccionarArchivo(event: any) {
     this.archivoExcel = event.target.files[0];
@@ -86,12 +113,66 @@ export class ControlEvaluacionesComponent {
 
     this.resultado = Object.values(resumen);
     const cursos = Object.values(resumen) as any[];
+    //DATOS ESTADISTICOS
+    let totalEsperadoU1 = 0;
+    let totalEsperadoU2 = 0;
+
+    this.estadisticaUnidad1 = [];
+    this.estadisticaUnidad2 = [];
+
+    cursos.forEach((curso: any) => {
+      // cantidad real de asignaturas
+      totalEsperadoU1 += curso.unidad1 / 100;
+      totalEsperadoU2 += curso.unidad2 / 100;
+
+      if (curso.unidad1 === 100) {
+        this.estadisticaUnidad1.push({
+          curso: curso.curso,
+          programa: curso.facultad,
+          estado: 'Correcto',
+        });
+      } else {
+        this.estadisticaUnidad1.push({
+          curso: curso.curso,
+          programa: curso.facultad,
+          estado: 'Falta completar',
+        });
+      }
+
+      if (curso.unidad2 === 100) {
+        this.estadisticaUnidad2.push({
+          curso: curso.curso,
+          programa: curso.facultad,
+          estado: 'Correcto',
+        });
+      } else {
+        this.estadisticaUnidad2.push({
+          curso: curso.curso,
+          programa: curso.facultad,
+          estado: 'Falta completar',
+        });
+      }
+    });
+
+    this.cumplenU1 = this.estadisticaUnidad1.filter(
+      (x) => x.estado === 'Correcto',
+    ).length;
+    this.faltanU1 = this.estadisticaUnidad1.length - this.cumplenU1;
+
+    this.cumplenU2 = this.estadisticaUnidad2.filter(
+      (x) => x.estado === 'Correcto',
+    ).length;
+    this.faltanU2 = this.estadisticaUnidad2.length - this.cumplenU2;
+
+    this.porcentajeU1 = (this.cumplenU1 * 100) / this.estadisticaUnidad1.length;
+    this.porcentajeU2 = (this.cumplenU2 * 100) / this.estadisticaUnidad2.length;
     // REPORTE 1
     this.reporteDiferente100 = cursos.filter(
-      (x) =>
+      (x: any) =>
         (x.unidad1 !== 100 || x.unidad2 !== 100) &&
         !(x.unidad1 === 100 && x.unidad2 === 0) &&
-        !(x.unidad1 === 0 && x.unidad2 === 0),
+        !(x.unidad1 === 0 && x.unidad2 === 0) &&
+        x.unidad1 + x.unidad2 !== 400,
     );
 
     // REPORTE 2
@@ -109,9 +190,20 @@ export class ControlEvaluacionesComponent {
     // REPORTE 4
     this.reporteTresUnidades = cursos.filter((x: any) => x.unidad3 > 0);
 
+    // REPORTE 5 (exactamente 200% en unidad1+unidad2)
+    this.reporteSumatoria200 = cursos.filter(
+      (x: any) => x.unidad1 + x.unidad2 === 400,
+    );
+
+    // REPORTE 6 (exactamente 100% en unidad1+unidad2)
+    this.reporteSumatoria100 = cursos.filter(
+      (x: any) => x.unidad1 + x.unidad2 === 200,
+    );
+
     this.resultado = this.resultado.filter(
       (x: any) => x.unidad1 !== 100 || x.unidad2 !== 100,
     );
+
     cursos.forEach((curso: any) => {
       let observacion = '';
 
@@ -131,6 +223,31 @@ export class ControlEvaluacionesComponent {
     });
     console.log(this.resultado);
   }
+  abrirModalDocente(docente: string, curso: string) {
+    this.docenteSeleccionado = docente;
+
+    this.evaluacionesDocente = this.datosExcel
+      .filter(
+        (f: any) =>
+          f.CoordinatorFullName === docente &&
+          `${f.CourseCode}-${f.CourseName}` === curso,
+      )
+      .map((f: any) => ({
+        facultad: f.CareerName,
+        asignatura: `${f.CourseCode}-${f.CourseName}`,
+        unidad: f.UnitNumber,
+        porcentaje: f.Percentage,
+      }));
+
+    this.modalDocenteOpen = true;
+  }
+
+  cerrarModalDocente() {
+    this.modalDocenteOpen = false;
+    this.docenteSeleccionado = '';
+    this.evaluacionesDocente = [];
+  }
+
   exportarExcel() {
     const reporte1Excel = this.reporteDiferente100.map((x) => ({
       Programa: x.facultad,
@@ -169,18 +286,46 @@ export class ControlEvaluacionesComponent {
       Observación: x.observacion,
     }));
 
+    const reporte5Excel = this.reporteSumatoria200.map((x) => ({
+      Programa: x.facultad,
+      Asignatura: x.curso,
+      Docente: x.docente,
+      'Unidad I (%)': x.unidad1,
+      'Unidad II (%)': x.unidad2,
+      Sumatoria: x.unidad1 + x.unidad2,
+    }));
+
+    const reporte6Excel = this.reporteSumatoria100.map((x) => ({
+      Programa: x.facultad,
+      Asignatura: x.curso,
+      Docente: x.docente,
+      'Unidad I (%)': x.unidad1,
+      'Unidad II (%)': x.unidad2,
+      Sumatoria: x.unidad1 + x.unidad2,
+    }));
+
     const wb = XLSX.utils.book_new();
 
     const ws1 = XLSX.utils.json_to_sheet(reporte1Excel);
     const ws2 = XLSX.utils.json_to_sheet(reporte2Excel);
     const ws3 = XLSX.utils.json_to_sheet(reporte3Excel);
     const ws4 = XLSX.utils.json_to_sheet(reporte4Excel);
+    const ws5 = XLSX.utils.json_to_sheet(reporte5Excel);
+    const ws6 = XLSX.utils.json_to_sheet(reporte6Excel);
 
     XLSX.utils.book_append_sheet(wb, ws1, 'Reporte_1');
     XLSX.utils.book_append_sheet(wb, ws2, 'Reporte_2');
     XLSX.utils.book_append_sheet(wb, ws3, 'Reporte_3');
     XLSX.utils.book_append_sheet(wb, ws4, 'Reporte_4');
+    XLSX.utils.book_append_sheet(wb, ws5, 'Reporte_5');
+    XLSX.utils.book_append_sheet(wb, ws6, 'Reporte_6');
 
     XLSX.writeFile(wb, 'Control_Evaluaciones.xlsx');
+    this.evaluacionesService.reporte1 = this.reporteDiferente100;
+    this.evaluacionesService.reporte2 = this.reporteUnidad2Cero;
+    this.evaluacionesService.reporte3 = this.reporteDosUnidadesCero;
+    this.evaluacionesService.reporte4 = this.reporteTresUnidades;
+    this.evaluacionesService.reporte5 = this.reporteSumatoria200;
+    this.evaluacionesService.reporte6 = this.reporteSumatoria100;
   }
 }

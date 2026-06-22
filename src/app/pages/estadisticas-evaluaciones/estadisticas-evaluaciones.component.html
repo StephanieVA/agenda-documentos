@@ -1,0 +1,41 @@
+<h1>📈 Estadísticas de Evaluaciones</h1>
+
+<div class="acciones">
+  <input
+    type="file"
+    (change)="seleccionarArchivo($event)"
+    accept=".xlsx,.xls"
+  />
+
+  <button (click)="procesarExcel()">Procesar Archivo</button>
+</div>
+<div class="cards">
+  <div class="card">
+    <h3>Programas</h3>
+    <h1>{{ totalProgramas }}</h1>
+  </div>
+
+  <div class="card">
+    <h3>Cumplen U1</h3>
+    <h1>{{ cumplenTotalU1 }}</h1>
+  </div>
+
+  <div class="card">
+    <h3>Observadas U1</h3>
+    <h1>{{ observadasTotalU1 }}</h1>
+  </div>
+
+  <div class="card">
+    <h3>Cumplen U2</h3>
+    <h1>{{ cumplenTotalU2 }}</h1>
+  </div>
+
+  <div class="card">
+    <h3>Observadas U2</h3>
+    <h1>{{ observadasTotalU2 }}</h1>
+  </div>
+</div>
+
+<div class="contenedor-grafico">
+  <canvas #graficoCumplimiento></canvas>
+</div>

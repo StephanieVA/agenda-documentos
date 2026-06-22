@@ -1,0 +1,30 @@
+.contenedor-grafico{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 0 10px rgba(0,0,0,.1);
+    height:1000px;
+
+}
+
+.acciones{
+
+    display:flex;
+
+    gap:15px;
+
+    align-items:center;
+
+}
+
+button{
+
+    padding:10px 20px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
