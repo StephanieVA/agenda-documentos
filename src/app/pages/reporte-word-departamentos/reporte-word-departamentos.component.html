@@ -1,0 +1,89 @@
+<div class="header">
+  <h1>📝 Reporte a Word por Departamento</h1>
+  <p>
+    Carga el Excel y genera un documento Word (horizontal) agrupado por
+    Departamento Académico.
+  </p>
+</div>
+
+<div class="acciones">
+  <input
+    type="file"
+    (change)="seleccionarArchivo($event)"
+    accept=".xlsx,.xls"
+  />
+
+  <button class="btn" (click)="procesarExcel()" [disabled]="!archivoExcel">
+    ⚙️ Procesar
+  </button>
+
+  <button class="btn" (click)="exportarWord()" [disabled]="!filas.length">
+    📄 Exportar Word
+  </button>
+</div>
+
+@if (!filas.length) {
+  <div class="sin-registros">
+    Cargar un archivo Excel para habilitar la exportación.
+  </div>
+}
+
+@if (departamentos.length) {
+  <div class="departamentos">
+    <h2>📚 Departamentos Académicos</h2>
+
+    <div class="botones">
+      @for (dep of departamentos; track dep) {
+        <button class="btn-departamento" (click)="seleccionarDepartamento(dep)">
+          {{ dep }}
+        </button>
+      }
+    </div>
+  </div>
+}
+
+@if (filasDepartamento.length) {
+  <div class="tabla-container">
+    <h2>
+      Reporte:
+      {{ departamentoSeleccionado }}
+    </h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Carrera</th>
+          <th>Docente Principal</th>
+          <th>Curso</th>
+          <th>Sección</th>
+          <th>Ciclo</th>
+          <th>Eva. con Notas</th>
+          <th>Total Eva.</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (fila of filasDepartamento; track $index) {
+          <tr>
+            <td>{{ fila.carrera }}</td>
+
+            <td>{{ fila.docente }}</td>
+
+            <td>{{ fila.curso }}</td>
+
+            <td>{{ fila.seccion }}</td>
+
+            <td>{{ fila.ciclo }}</td>
+
+            <td>{{ fila.evaConNotas }}</td>
+
+            <td>{{ fila.totalEva }}</td>
+
+            <td>{{ fila.estado }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

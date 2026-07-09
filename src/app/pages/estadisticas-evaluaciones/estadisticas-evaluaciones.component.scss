@@ -3,28 +3,52 @@
     padding:20px;
     border-radius:15px;
     box-shadow:0 0 10px rgba(0,0,0,.1);
-    height:1000px;
+    min-height:320px;
+    height:auto;
+}
 
+
+.cards{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap:15px;
+    margin-top:15px;
+}
+
+.card{
+    background:white;
+    border-radius:15px;
+    box-shadow:0 0 10px rgba(0,0,0,.05);
+    padding:16px;
+}
+
+.card h3{
+    margin:0;
+    font-size:0.95rem;
+    color:#333;
+}
+
+.card h1{
+    margin:8px 0 0;
+    font-size:1.6rem;
 }
 
 .acciones{
-
     display:flex;
-
+    flex-wrap:wrap;
     gap:15px;
-
     align-items:center;
-
 }
 
 button{
-
     padding:10px 20px;
-
     border:none;
-
     border-radius:8px;
-
     cursor:pointer;
-
 }
+
+@media (max-width: 600px){
+    .card h1{ font-size:1.3rem; }
+    .card{ padding:12px; }
+}
+

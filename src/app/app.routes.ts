@@ -3,6 +3,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ControlEvaluacionesComponent } from './pages/control-evaluaciones/control-evaluaciones.component';
 import { VerificacionPesosComponent } from './pages/verificacion-pesos/verificacion-pesos.component';
 import { EstadisticasEvaluacionesComponent } from './pages/estadisticas-evaluaciones/estadisticas-evaluaciones.component';
+import { ReporteWordDepartamentosComponent } from './pages/reporte-word-departamentos/reporte-word-departamentos.component';
 
 export const routes: Routes = [
   {
@@ -28,5 +29,10 @@ export const routes: Routes = [
   {
     path: 'pesos',
     component: VerificacionPesosComponent,
+  },
+
+  {
+    path: 'reporte-word-departamentos',
+    component: ReporteWordDepartamentosComponent,
   },
 ];

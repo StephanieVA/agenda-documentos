@@ -1,0 +1,123 @@
+.header {
+  margin-bottom: 16px;
+}
+
+.acciones {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  background: #2b6cff;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn:disabled {
+  background: #9bbcff;
+  cursor: not-allowed;
+}
+
+.sin-registros {
+  padding: 12px;
+  border: 1px dashed #cfcfcf;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.departamentos{
+
+margin-top:20px;
+
+}
+
+
+.botones{
+
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+
+}
+
+
+.btn-departamento{
+
+background:#123b70;
+color:white;
+
+border:none;
+
+padding:12px 18px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+
+.btn-departamento:hover{
+
+background:#d49b20;
+
+}
+
+
+
+.tabla-container{
+
+margin-top:25px;
+
+overflow:auto;
+
+}
+
+
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+
+
+th{
+
+background:#123b70;
+
+color:white;
+
+padding:10px;
+
+}
+
+
+
+td{
+
+border:1px solid #ddd;
+
+padding:8px;
+
+}
+
+
+
+tr:hover{
+
+background:#f7f7f7;
+
+}
