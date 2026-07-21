@@ -223,24 +223,25 @@ export class ControlEvaluacionesComponent {
     });
     console.log(this.resultado);
   }
-  abrirModalDocente(docente: string, curso: string) {
-    this.docenteSeleccionado = docente;
+  abrirModalDocente(docente: string, programa: string, curso: string) {
+  this.docenteSeleccionado = docente;
 
-    this.evaluacionesDocente = this.datosExcel
-      .filter(
-        (f: any) =>
-          f.CoordinatorFullName === docente &&
-          `${f.CourseCode}-${f.CourseName}` === curso,
-      )
-      .map((f: any) => ({
-        facultad: f.CareerName,
-        asignatura: `${f.CourseCode}-${f.CourseName}`,
-        unidad: f.UnitNumber,
-        porcentaje: f.Percentage,
-      }));
+  this.evaluacionesDocente = this.datosExcel
+    .filter((f: any) =>
+      f.CoordinatorFullName === docente &&
+      f.CareerName === programa &&
+      `${f.CourseCode}-${f.CourseName}` === curso
+    )
+    .map((f: any) => ({
+      programa: f.CareerName,
+      asignatura: `${f.CourseCode}-${f.CourseName}`,
+      unidad: Number(f.UnitNumber),
+      porcentaje: Number(f.Percentage)
+    }))
+    .sort((a, b) => a.unidad - b.unidad);
 
-    this.modalDocenteOpen = true;
-  }
+  this.modalDocenteOpen = true;
+}
 
   cerrarModalDocente() {
     this.modalDocenteOpen = false;
