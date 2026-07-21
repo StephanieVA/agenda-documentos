@@ -103,7 +103,7 @@
             <td>
               <button
                 class="link-docente"
-                (click)="abrirModalDocente(item.docente, item.curso)"
+                (click)="abrirModalDocente(item.docente, item.facultad, item.curso)"
               >
                 {{ item.docente }}
               </button>
@@ -260,7 +260,7 @@
             <td>
               <button
                 class="link-docente"
-                (click)="abrirModalDocente(item.docente, item.curso)"
+                (click)="abrirModalDocente(item.docente, item.facultad, item.curso)"
               >
                 {{ item.docente }}
               </button>
@@ -303,7 +303,7 @@
             <td>
               <button
                 class="link-docente"
-                (click)="abrirModalDocente(item.docente, item.curso)"
+                (click)="abrirModalDocente(item.docente, item.facultad, item.curso)"
               >
                 {{ item.docente }}
               </button>
@@ -338,27 +338,27 @@
 
         <div class="tabla-container modal-tabla">
           <table>
-            <thead>
-              <tr>
-                <th>Programa</th>
-                <th>Asignatura</th>
-                <th>Unidad</th>
-                <th>Porcentaje</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (
-                e of evaluacionesDocente;
-                track e.asignatura + e.unidad + e.porcentaje
-              ) {
-                <tr>
-                  <td>{{ e.facultad }}</td>
-                  <td>{{ e.asignatura }}</td>
-                  <td>{{ e.unidad }}</td>
-                  <td>{{ e.porcentaje }}%</td>
-                </tr>
-              }
-            </tbody>
+           <thead>
+<tr>
+  <th>Programa</th>
+  <th>Asignatura</th>
+  <th>Unidad</th>
+  <th>Porcentaje</th>
+</tr>
+</thead>
+
+<tbody>
+@for (e of evaluacionesDocente; track $index) {
+
+<tr>
+  <td>{{ e.programa }}</td>
+  <td>{{ e.asignatura }}</td>
+  <td>{{ e.unidad }}</td>
+  <td>{{ e.porcentaje }}%</td>
+</tr>
+
+}
+</tbody>
           </table>
         </div>
 
